@@ -20,7 +20,7 @@
     "editor.formatOnPaste": true,
     "editor.rulers": [88]
   },
-  "python.formatting.provider": "none", // Let Prettier handle formatting
+  "python.formatting.provider": "none",
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,
   "files.trimTrailingWhitespace": true
