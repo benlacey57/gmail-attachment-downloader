@@ -13,6 +13,7 @@ Date: February 2025
 - [Setup](#setup)
   - [Google API Credentials](#google-api-credentials)
   - [Installation](#installation)
+  - [Secure Credentials](#secure-creds)
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Command-Line Arguments](#command-line-arguments)
@@ -29,6 +30,7 @@ google-auth-oauthlib>=0.4.0
 google-auth-httplib2>=0.1.0
 pyyaml>=6.0
 typing>=3.7.4
+cryptography
 ```
 
 Install the dependencies with:
@@ -75,6 +77,63 @@ Before using this tool, you need to obtain a `credentials.json` file from Google
 2. Install dependencies: `pip install -r requirements.txt`
 3. Place your `credentials.json` file in the project directory
 
+## Using Encrypted Credentials
+
+### Step 1: Upload credentials.json
+
+### Step 2: Encrypt Your Credentials
+
+```bash
+python encrypt_credentials.py --credentials credentials.json
+```
+
+This will:
+1. Ask you for a password to encrypt the file
+2. Create an encrypted file named `credentials.json.encrypted`
+3. Update your config.yaml to use encrypted mode
+4. Display the encryption key for you to save
+
+### Step 3: Secure Your Encryption Key
+
+You have two options for providing the key when running the application:
+
+1. **Set an environment variable** (more secure for automation):
+   ```bash
+   export GMAIL_ENCRYPTION_KEY='your-encryption-key'
+   ```
+
+2. **Enter password when prompted** (if environment variable is not set)
+
+### Step 4: Delete the Original Credentials File
+
+Once encryption is verified working, delete the original unencrypted credentials:
+
+```bash
+rm credentials.json
+```
+
+### Step 5: Run Your Application Normally
+
+```bash
+python main.py
+```
+
+The application will:
+1. Detect encrypted credentials mode from config
+2. Decrypt credentials to a temporary file
+3. Use the credentials to access Gmail API
+4. Automatically delete the temporary file when done
+
+## Security Notes
+
+1. **Key Storage**: Store your encryption key in a secure password manager, not in plaintext files.
+
+2. **Environment Variables**: If using environment variables, set them in your session, don't save them in scripts that get committed to version control.
+
+3. **Password Strength**: If using a password instead of a random key, choose a strong password.
+
+4. **Rotation**: Consider rotating your encryption key periodically for enhanced security.
+
 ## Configuration
 
 The application uses a YAML configuration file. If not present, a default one will be created automatically. You can specify a custom config file location with the `--config` argument.
@@ -105,7 +164,7 @@ search:
 ```
 
 ### Configuration Options
-
+##
 #### Gmail Section
 - `credentials_file`: Path to your Google API credentials file
 
