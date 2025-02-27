@@ -41,8 +41,8 @@ class CredentialEncryptor:
         
         # Get encryption key
         if key is None:
-            password = getpass.getpass("Enter a password for encryption: ")
-            key = CredentialEncryptor.derive_key_from_password(password)
+            # Use a generated key rather than password for better security
+            key = CredentialEncryptor.generate_key()
         elif isinstance(key, str):
             key = key.encode()
         
@@ -63,8 +63,6 @@ class CredentialEncryptor:
             file.write(encrypted_data)
         
         print(f"File encrypted successfully to {output_path}")
-        print(f"IMPORTANT: Save this key in a secure location: {key.decode()}")
-        print("You'll need this key to decrypt the file later.")
         
         return output_path, key.decode()
     
@@ -120,22 +118,3 @@ class CredentialEncryptor:
         logger.info(f"File decrypted successfully to {output_file}")
         
         return output_file
-
-if __name__ == "__main__":
-    import argparse
-    
-    parser = argparse.ArgumentParser(description="Encrypt or decrypt credential files")
-    parser.add_argument("--encrypt", action="store_true", help="Encrypt a file")
-    parser.add_argument("--decrypt", action="store_true", help="Decrypt a file")
-    parser.add_argument("--input", required=True, help="Input file path")
-    parser.add_argument("--output", help="Output file path")
-    parser.add_argument("--key", help="Encryption/decryption key")
-    
-    args = parser.parse_args()
-    
-    if args.encrypt:
-        CredentialEncryptor.encrypt_file(args.input, args.output, args.key)
-    elif args.decrypt:
-        CredentialEncryptor.decrypt_file(args.input, args.output, args.key)
-    else:
-        print("Please specify either --encrypt or --decrypt")
