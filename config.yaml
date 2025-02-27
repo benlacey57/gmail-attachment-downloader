@@ -1,17 +1,14 @@
-gmail:
-  credentials_mode: "encrypted"
-  credentials_file: "credentials.json"
-  encrypted_credentials_file: "credentials.json.encrypted"
-
-logging:
-  system_log: 'logs/system.log'
-  search_log: 'logs/search.log'
-  log_level: 'INFO'
-  
-downloads:
-  output_directory: 'downloads'
-  organize_by_sender: true
-  
 csv_record:
   enabled: true
-  filename: 'attachment_records.csv'
+  filename: attachment_records.csv
+downloads:
+  organize_by_sender: true
+  output_directory: downloads
+gmail:
+  credentials_file: credentials.json
+  credentials_mode: encrypted
+  encrypted_credentials_file: /workspaces/gmail-attachment-downloader/credentials.json.encrypted
+logging:
+  log_level: INFO
+  search_log: logs/search.log
+  system_log: logs/system.log

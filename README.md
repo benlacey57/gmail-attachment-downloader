@@ -9,16 +9,17 @@ Date: February 2025
 ---
 
 ## Table of Contents
-- [Requirements](#requirements)
-- [Setup](#setup)
-  - [Google API Credentials](#google-api-credentials)
-  - [Installation](#installation)
-  - [Secure Credentials](#secure-creds)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [Command-Line Arguments](#command-line-arguments)
-- [Logs and Reports](#logs-and-reports)
-- [Example Workflows](#example-workflows)
+
+-   [Requirements](#requirements)
+-   [Setup](#setup)
+    -   [Google API Credentials](#google-api-credentials)
+    -   [Installation](#installation)
+    -   [Secure Credentials](#secure-creds)
+-   [Configuration](#configuration)
+-   [Usage](#usage)
+-   [Command-Line Arguments](#command-line-arguments)
+-   [Logs and Reports](#logs-and-reports)
+-   [Example Workflows](#example-workflows)
 
 ## Requirements
 
@@ -46,30 +47,34 @@ pip install -r requirements.txt
 Before using this tool, you need to obtain a `credentials.json` file from Google:
 
 1. **Create a Google Cloud Project**:
-   - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a new project or select an existing one
-   - Note your project ID
+
+    - Go to [Google Cloud Console](https://console.cloud.google.com/)
+    - Create a new project or select an existing one
+    - Note your project ID
 
 2. **Enable the Gmail API**:
-   - In your project, navigate to "APIs & Services" > "Library"
-   - Search for "Gmail API" and select it
-   - Click "Enable"
+
+    - In your project, navigate to "APIs & Services" > "Library"
+    - Search for "Gmail API" and select it
+    - Click "Enable"
 
 3. **Create OAuth Credentials**:
-   - Go to "APIs & Services" > "Credentials"
-   - Click "Create Credentials" > "OAuth client ID"
-   - Select "Desktop application" as the application type
-   - Name your OAuth client
-   - Click "Create"
+
+    - Go to "APIs & Services" > "Credentials"
+    - Click "Create Credentials" > "OAuth client ID"
+    - Select "Desktop application" as the application type
+    - Name your OAuth client
+    - Click "Create"
 
 4. **Download Credentials**:
-   - After creation, you'll see a download button (JSON)
-   - Download and save the file as `credentials.json` in your project directory
+
+    - After creation, you'll see a download button (JSON)
+    - Download and save the file as `credentials.json` in your project directory
 
 5. **First Authentication**:
-   - The first time you run the script, it will open a browser window
-   - Log in with your Google account and grant the requested permissions
-   - This will create a token that's stored for future use
+    - The first time you run the script, it will open a browser window
+    - Log in with your Google account and grant the requested permissions
+    - This will create a token that's stored for future use
 
 ### Installation
 
@@ -88,6 +93,7 @@ python encrypt_credentials.py --credentials credentials.json
 ```
 
 This will:
+
 1. Ask you for a password to encrypt the file
 2. Create an encrypted file named `credentials.json.encrypted`
 3. Update your config.yaml to use encrypted mode
@@ -98,9 +104,10 @@ This will:
 You have two options for providing the key when running the application:
 
 1. **Set an environment variable** (more secure for automation):
-   ```bash
-   export GMAIL_ENCRYPTION_KEY='your-encryption-key'
-   ```
+
+    ```bash
+    export GMAIL_ENCRYPTION_KEY='your-encryption-key'
+    ```
 
 2. **Enter password when prompted** (if environment variable is not set)
 
@@ -119,6 +126,7 @@ python main.py
 ```
 
 The application will:
+
 1. Detect encrypted credentials mode from config
 2. Decrypt credentials to a temporary file
 3. Use the credentials to access Gmail API
@@ -142,49 +150,56 @@ The application uses a YAML configuration file. If not present, a default one wi
 
 ```yaml
 gmail:
-  credentials_file: credentials.json
+    credentials_file: credentials.json
 
 logging:
-  system_log: logs/system.log
-  search_log: logs/search.log
-  log_level: INFO
+    system_log: logs/system.log
+    search_log: logs/search.log
+    log_level: INFO
 
 downloads:
-  output_directory: downloads
-  organize_by_sender: true
+    output_directory: downloads
+    organize_by_sender: true
 
 csv_record:
-  enabled: true
-  filename: attachment_records.csv
+    enabled: true
+    filename: attachment_records.csv
 
 search:
-  query: has:attachment
-  file_types: .pdf,.doc,.docx,.xls,.xlsx
-  dry_run: false
+    query: has:attachment
+    file_types: .pdf,.doc,.docx,.xls,.xlsx
+    dry_run: false
 ```
 
 ### Configuration Options
+
 ##
+
 #### Gmail Section
-- `credentials_file`: Path to your Google API credentials file
+
+-   `credentials_file`: Path to your Google API credentials file
 
 #### Logging Section
-- `system_log`: Path to system log file (records function calls and durations)
-- `search_log`: Path to search log file (records search queries and results)
-- `log_level`: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+
+-   `system_log`: Path to system log file (records function calls and durations)
+-   `search_log`: Path to search log file (records search queries and results)
+-   `log_level`: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 
 #### Downloads Section
-- `output_directory`: Base directory for downloaded attachments
-- `organize_by_sender`: Whether to create subdirectories by sender name
+
+-   `output_directory`: Base directory for downloaded attachments
+-   `organize_by_sender`: Whether to create subdirectories by sender name
 
 #### CSV Record Section
-- `enabled`: Whether to keep a CSV record of downloaded files
-- `filename`: Path to the CSV record file
+
+-   `enabled`: Whether to keep a CSV record of downloaded files
+-   `filename`: Path to the CSV record file
 
 #### Search Section
-- `query`: Default Gmail search query
-- `file_types`: Comma-separated list of file extensions to filter (.pdf,.doc,etc.)
-- `dry_run`: If true, performs a simulation without downloading files
+
+-   `query`: Default Gmail search query
+-   `file_types`: Comma-separated list of file extensions to filter (.pdf,.doc,etc.)
+-   `dry_run`: If true, performs a simulation without downloading files
 
 ## Usage
 
@@ -210,16 +225,19 @@ The script supports several command-line arguments that override config file set
 ### Examples
 
 Search for PDF attachments from a specific sender:
+
 ```bash
 python main.py --query "from:example@gmail.com has:attachment" --file-types ".pdf"
 ```
 
 Perform a dry run to see what would be downloaded:
+
 ```bash
 python main.py --query "subject:invoice has:attachment" --dry-run
 ```
 
 Use a custom configuration file:
+
 ```bash
 python main.py --config my_custom_config.yaml
 ```
@@ -229,30 +247,34 @@ python main.py --config my_custom_config.yaml
 The application generates several files to help track activity:
 
 1. **System Log** (`logs/system.log`):
-   - Records function calls with execution times
-   - Tracks errors and system events
+
+    - Records function calls with execution times
+    - Tracks errors and system events
 
 2. **Search Log** (`logs/search.log`):
-   - Records search queries and criteria
-   - Logs number of results and processing time
+
+    - Records search queries and criteria
+    - Logs number of results and processing time
 
 3. **CSV Record** (`attachment_records.csv`):
-   - Detailed information about each downloaded attachment
-   - Includes message details, file information, and storage paths
+    - Detailed information about each downloaded attachment
+    - Includes message details, file information, and storage paths
 
 ## Example Workflows
 
 ### Downloading Invoice PDFs
 
 Config:
+
 ```yaml
 search:
-  query: "subject:invoice has:attachment"
-  file_types: .pdf
-  dry_run: false
+    query: 'subject:invoice has:attachment'
+    file_types: .pdf
+    dry_run: false
 ```
 
 Command:
+
 ```bash
 python main.py
 ```
@@ -260,14 +282,16 @@ python main.py
 ### Finding Documents from a Specific Sender
 
 Config:
+
 ```yaml
 search:
-  query: "from:supplier@example.com has:attachment"
-  file_types: .doc,.docx,.pdf
-  dry_run: false
+    query: 'from:supplier@example.com has:attachment'
+    file_types: .doc,.docx,.pdf
+    dry_run: false
 ```
 
 Command:
+
 ```bash
 python main.py
 ```
@@ -275,6 +299,7 @@ python main.py
 ### Backing up All Attachments from Last Month
 
 Command:
+
 ```bash
 python main.py --query "after:2023/01/01 before:2023/02/01 has:attachment"
 ```

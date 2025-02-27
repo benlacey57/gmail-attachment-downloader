@@ -1,24 +1,24 @@
 {
-  "name": "gmail-attachment-downloader",
-  "version": "1.0.0",
-  "description": "A tool to download Gmail attachments with advanced filtering and organisation",
-  "main": "",
-  "scripts": {
-    "format": "prettier --write '**/*.{py,json,md}'",
-    "format:check": "prettier --check '**/*.{py,json,md}'"
-  },
-  "keywords": [
-    "gmail",
-    "attachment",
-    "downloader",
-    "email",
-    "python"
-  ],
-  "author": "Media Wolf",
-  "license": "MIT",
-  "private": true,
-  "devDependencies": {
-    "prettier": "^2.8.8",
-    "@prettier/plugin-python": ""
-  }
+    "name": "gmail-attachment-downloader",
+    "version": "1.0.0",
+    "description": "A tool to download Gmail attachments with advanced filtering and organisation",
+    "main": "",
+    "scripts": {
+        "format": "prettier --write '**/*.{py,json,md}'",
+        "format:check": "prettier --check '**/*.{py,json,md}'"
+    },
+    "keywords": [
+        "gmail",
+        "attachment",
+        "downloader",
+        "email",
+        "python"
+    ],
+    "author": "Media Wolf",
+    "license": "MIT",
+    "private": true,
+    "devDependencies": {
+        "prettier": "^2.8.8",
+        "@prettier/plugin-python": ""
+    }
 }
