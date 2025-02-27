@@ -1,6 +1,8 @@
 gmail:
-  credentials_file: 'credentials.json'
-  
+  credentials_mode: "encrypted"
+  credentials_file: "credentials.json"
+  encrypted_credentials_file: "credentials.json.encrypted"
+
 logging:
   system_log: 'logs/system.log'
   search_log: 'logs/search.log'
