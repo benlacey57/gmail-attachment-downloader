@@ -174,46 +174,46 @@ class EmailService:
         self._initialize_service()
     
     def _initialize_service(self) -> None:
-    """Initialize Gmail API service with secure credentials."""
-    try:
-        credentials_mode = self.config_manager.get('gmail', 'credentials_mode')
-        temp_file = None
+        """Initialize Gmail API service with secure credentials."""
+        try:
+            credentials_mode = self.config_manager.get('gmail', 'credentials_mode')
+            temp_file = None
         
-        if credentials_mode == "encrypted":
-            # Get encrypted file path
-            encrypted_file = self.config_manager.get('gmail', 'encrypted_credentials_file')
+            if credentials_mode == "encrypted":
+                # Get encrypted file path
+                encrypted_file = self.config_manager.get('gmail', 'encrypted_credentials_file')
             
-            # Import encryptor
-            from encryption_util import CredentialEncryptor
+                # Import encryptor
+                from encryption_util import CredentialEncryptor
             
-            # Decrypt to temporary file
-            temp_file = CredentialEncryptor.decrypt_file(encrypted_file)
+                # Decrypt to temporary file
+                temp_file = CredentialEncryptor.decrypt_file(encrypted_file)
             
-            if not temp_file:
-                raise Exception("Failed to decrypt credentials file")
+                if not temp_file:
+                    raise Exception("Failed to decrypt credentials file")
             
-            credentials = Credentials.from_authorized_user_file(temp_file)
-        else:
-            # Default to regular file
-            credentials_file = self.config_manager.get('gmail', 'credentials_file')
-            credentials = Credentials.from_authorized_user_file(credentials_file)
+                credentials = Credentials.from_authorized_user_file(temp_file)
+            else:
+                # Default to regular file
+                credentials_file = self.config_manager.get('gmail', 'credentials_file')
+                credentials = Credentials.from_authorized_user_file(credentials_file)
         
-        # Build service
-        self.service = build('gmail', 'v1', credentials=credentials)
-        self.logger.info("Gmail API service initialized successfully")
+            # Build service
+            self.service = build('gmail', 'v1', credentials=credentials)
+            self.logger.info("Gmail API service initialized successfully")
         
-        # Clean up temp file if used
-        if temp_file and os.path.exists(temp_file):
-            os.remove(temp_file)
+            # Clean up temp file if used
+            if temp_file and os.path.exists(temp_file):
+                os.remove(temp_file)
             
-    except Exception as e:
-        self.logger.error(f"Failed to initialize Gmail API service: {e}")
+        except Exception as e:
+            self.logger.error(f"Failed to initialize Gmail API service: {e}")
         
-        # Clean up temp file in case of error
-        if temp_file and os.path.exists(temp_file):
-            os.remove(temp_file)
+    # Clean up temp file in case of error
+    if temp_file and os.path.exists(temp_file):
+        os.remove(temp_file)
             
-        raise
+    raise
     
     @timing_decorator(logging.getLogger('system'))
     def list_messages(self, query: str) -> List[Dict[str, str]]:
