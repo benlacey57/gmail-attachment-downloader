@@ -1,0 +1,15 @@
+gmail:
+  credentials_file: 'credentials.json'
+  
+logging:
+  system_log: 'logs/system.log'
+  search_log: 'logs/search.log'
+  log_level: 'INFO'
+  
+downloads:
+  output_directory: 'downloads'
+  organize_by_sender: true
+  
+csv_record:
+  enabled: true
+  filename: 'attachment_records.csv'
