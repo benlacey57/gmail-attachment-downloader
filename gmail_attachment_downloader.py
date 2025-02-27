@@ -414,98 +414,93 @@ class AttachmentHandler:
 
 class GmailAttachmentDownloader:
     """Main class to coordinate Gmail attachment downloading."""
-
+    
     def __init__(self, config_file: str = 'config.yaml'):
         # Initialize configuration
         self.config_manager = ConfigManager(config_file)
-
+        
         # Initialize loggers
         self.logger_factory = LoggerFactory(self.config_manager)
         self.system_logger = self.logger_factory.get_logger('system')
         self.search_logger = self.logger_factory.get_logger('search')
-
+        
         # Initialize components
         self.email_service = EmailService(self.config_manager, self.system_logger)
         self.message_processor = MessageProcessor(self.system_logger)
         self.attachment_handler = AttachmentHandler(self.config_manager, self.system_logger)
         self.csv_manager = CSVRecordManager(self.config_manager)
-
+        
         self.system_logger.info("GmailAttachmentDownloader initialized")
-
+    
     def _parse_file_types(self, file_types_str: str) -> List[str]:
         """Parse file types string into a list of file extensions."""
         if not file_types_str:
             return []
-
+        
         file_types = []
         for file_type in file_types_str.split(','):
             file_type = file_type.strip().lower()
             if not file_type.startswith('.'):
                 file_type = '.' + file_type
             file_types.append(file_type)
-
+        
         return file_types
-
+    
     @timing_decorator(logging.getLogger('system'))
-    def search_and_download_attachments(self,
-                                        query: str,
-                                        file_types_str: str = "",
+    def search_and_download_attachments(self, 
+                                        query: str, 
+                                        file_types_str: str = "", 
                                         dry_run: bool = False) -> None:
         """Search for messages and download their attachments."""
         try:
             start_time = time.time()
             self.system_logger.info(f"Starting search and download with query: '{query}'")
-
+            
             # Log search parameters
             self.search_logger.info(
                 f"Search initiated - Query: '{query}', File types: '{file_types_str}', Dry run: {dry_run}"
             )
-
+            
             # Parse file types for filtering
             file_types = self._parse_file_types(file_types_str)
             if file_types:
                 self.system_logger.info(f"Filtering attachments by types: {file_types}")
-
+            
             # List messages matching the query
             messages = self.email_service.list_messages(query)
             self.search_logger.info(f"Found {len(messages)} messages")
-
+            
             # Process each message
             processed_attachments = 0
             for message_data in messages:
                 message_id = message_data['id']
                 message = self.email_service.get_message(message_id)
-
+                
                 if not message:
                     continue
-
+                
                 # Extract message information
                 sender_name, sender_email = self.message_processor.extract_sender_info(message)
                 subject = self.message_processor.extract_subject(message)
-
-                # Check if message has attachments
-                if not self.message_processor.has_attachments(message):
-                    self.system_logger.info(f"Message {message_id} has no attachments")
-                    continue
-
+                
                 # Get and filter attachment parts
                 attachment_parts = self.message_processor.get_attachment_parts(message)
                 if file_types:
                     attachment_parts = self.message_processor.filter_attachments_by_type(
                         attachment_parts, file_types
                     )
-
+                
                 if not attachment_parts:
                     self.system_logger.info(
-                        f"Message {message_id} has no attachments matching file types: {file_types}"
+                        f"Message {message_id} has no attachments matching filter criteria"
                     )
                     continue
-
+                
                 # Process each attachment
                 for part in attachment_parts:
                     original_filename = part['filename']
                     attachment_id = part['body']['attachmentId']
-
+                    
                     # Skip if dry run
                     if dry_run:
                         self.system_logger.info(
@@ -513,9 +508,36 @@ class GmailAttachmentDownloader:
                             f"from {sender_name} <{sender_email}>"
                         )
                         continue
-
+                    
                     # Download attachment
                     file_data = self.email_service.get_attachment(message_id, attachment_id)
                     if not file_data:
                         continue
-
+                    
+                    # Save attachment
+                    new_filename, timestamp, file_size, file_path = self.attachment_handler.save_attachment(
+                        file_data, original_filename, sender_name
+                    )
+                    
+                    # Record to CSV
+                    file_type = self.attachment_handler._get_file_type(original_filename)
+                    self.csv_manager.record_attachment(
+                        timestamp, message_id, sender_name, sender_email, subject,
+                        new_filename, original_filename, file_size, file_type, file_path
+                    )
+                    
+                    processed_attachments += 1
+            
+            # Log search results
+            end_time = time.time()
+            duration = end_time - start_time
+            self.search_logger.info(
+                f"Search completed - Duration: {duration:.2f}s, Attachments processed: {processed_attachments}"
+            )
+            self.system_logger.info(
+                f"Completed search and download. Processed {processed_attachments} attachments in {duration:.2f} seconds."
+            )
+            
+        except Exception as e:
+            self.system_logger.error(f"Error in search_and_download_attachments: {e}")
+            raise
