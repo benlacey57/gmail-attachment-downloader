@@ -206,14 +206,14 @@ class EmailService:
             if temp_file and os.path.exists(temp_file):
                 os.remove(temp_file)
             
-        except Exception as e:
-            self.logger.error(f"Failed to initialize Gmail API service: {e}")
+            except Exception as e:
+                self.logger.error(f"Failed to initialize Gmail API service: {e}")
         
-    # Clean up temp file in case of error
-    if temp_file and os.path.exists(temp_file):
-        os.remove(temp_file)
+        # Clean up temp file in case of error
+        if temp_file and os.path.exists(temp_file):
+            os.remove(temp_file)
             
-    raise
+        raise
     
     @timing_decorator(logging.getLogger('system'))
     def list_messages(self, query: str) -> List[Dict[str, str]]:
