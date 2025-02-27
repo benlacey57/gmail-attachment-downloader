@@ -1,0 +1,94 @@
+# Credentials and security files
+credentials.json
+credentials.json.encrypted
+*.encrypted
+encryption_key_*.txt
+token.json
+token.pickle
+*.key
+secrets/
+
+# Downloaded attachments and output
+downloads/
+attachments/
+output/
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+
+# Configuration (optional - if you want to exclude user configs)
+# config.yaml
+
+# Logs and records
+logs/
+*.log
+attachment_records.csv
+*.csv
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.env
+.venv
+env.bak/
+venv.bak/
+.python-version
+
+# PyCharm specific
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Operating system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+temp_credentials_*.json
+tmp/
+temp/
+*.tmp
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
